@@ -19,8 +19,10 @@ class ProductView(APIView):
     #     serializer = ProductSerializer(queryset, many=True)
     #     return Response(serializer.data)
     
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
+
         # http://127.0.0.1:8000/api/products?Category=vegetable
         Category = self.request.query_params.get('Category')
         if Category:
