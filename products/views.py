@@ -21,13 +21,16 @@ class ProductView(APIView):
     
 
     def get(self, request):
+        # http://127.0.0.1:8000/api/products?Category=vegetable
         Category = self.request.query_params.get('Category')
         if Category:
             queryset = Product.objects.filter(Category__Category_name=Category)
         else:
             queryset = Product.objects.all()
         serializer = ProductSerializer(queryset, many=True)
-        return Response(serializer.data)
+        
+        # http://127.0.0.1:8000/api/products?Category=vegetable
+        return Response({'count': len(serializer.data), 'data' :serializer.data})
     
     
 
