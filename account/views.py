@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from .serializers import *
 from rest_framework import generics
 from django.contrib.auth import authenticate
-
+from .models import *
 
 class RegisterView(APIView):
     def post(self, request):
@@ -17,16 +17,19 @@ class RegisterView(APIView):
         first_name= request.data.get('first_name')
         last_name= request.data.get('last_name')
         email= request.data.get('email')
-        # phone=request.data.get('phone')
+        phone=request.data.get('phone')
+        address = request.data.get('address')
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         # is_staff = request.data.get('is_staff', False)
 
         user = User(username=username,first_name=first_name,last_name=last_name,email=email)
+        member = Member(user=user,phone=phone,address=address)
         user.set_password(password)
         # user.is_staff = is_staff  # Cập nhật trạng thái STAFF
         user.save()
+        member.save()
 
         refresh = RefreshToken.for_user(user)
         token = refresh.access_token
@@ -44,10 +47,13 @@ class RegisterView(APIView):
                 'email':user.email,
                 'first_name':user.first_name,
                 'last_name':user.last_name,
+                'phone':   member.phone,
+                'address':member.address,
                 'refresh': str(refresh),
                 'access': str(refresh.access_token)
         })
         
+
 
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
@@ -73,6 +79,8 @@ class LoginView(APIView):
                 'email':user.email,
                 'first_name':user.first_name,
                 'last_name':user.last_name,
+                # 'phone':   user.phone,
+                # 'address':user.address,
                 'refresh': str(refresh),
                 'access': str(refresh.access_token)
 
