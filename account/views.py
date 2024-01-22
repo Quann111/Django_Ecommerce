@@ -68,6 +68,10 @@ class LoginView(APIView):
 
         # Xác thực người dùng
         user = authenticate(username=username, password=password)
+        
+        member = Member()
+        member.phone = request.data.get('phone')
+        member.address = request.data.get('address')
 
         if user is not None:
             refresh = RefreshToken.for_user(user)
@@ -79,8 +83,9 @@ class LoginView(APIView):
                 'email':user.email,
                 'first_name':user.first_name,
                 'last_name':user.last_name,
-                # 'phone':   user.phone,
-                # 'address':user.address,
+                'phone':   member.phone,
+                'address':member.address,
+                
                 'refresh': str(refresh),
                 'access': str(refresh.access_token)
 

@@ -19,7 +19,7 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
 
-
+    
 class ProductSerializer(serializers.ModelSerializer):
     Category = serializers.SerializerMethodField()
     Quantity_type = QuantitySerializer()
@@ -33,3 +33,11 @@ class ProductSerializer(serializers.ModelSerializer):
         category = obj.Category
         serializer = CategorySerializer(category)
         return serializer.data
+    
+    
+# image
+    def get_photo_url(self, obj):
+        request = self.context.get('request')
+        photo_url = obj.fingerprint.url
+        return request.build_absolute_uri(photo_url)
+    

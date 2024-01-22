@@ -27,6 +27,11 @@ DEBUG = True
 ALLOWED_HOSTS = ['192.168.1.119', '127.0.0.1', 'localhost']
 
 APPEND_SLASH = False
+import os
+
+MEDIA_ROOT  = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 
 # Application definition
 # AUTH_USER_MODEL = 'accounts.User'
@@ -44,12 +49,17 @@ INSTALLED_APPS = [
     'account',
     'Carts',
     'corsheaders',
+    
 ]
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100,
+    
 }
 
 MIDDLEWARE = [
@@ -89,8 +99,8 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        # 'NAME': 'ecommerce',
-        'NAME': 'ee',
+        'NAME': 'ecommerce',
+        # 'NAME': 'ee',
         'USER': 'aadmin',
         'PASSWORD': '123123quan',
     }
@@ -142,7 +152,7 @@ from datetime import timedelta
 ...
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,

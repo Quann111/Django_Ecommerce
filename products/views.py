@@ -5,23 +5,14 @@ from rest_framework import status
 from .models import *
 from .serializers import *
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
+# from rest_framework.pagination import LimitOffsetPagination
 
-
-class ProductView(APIView):
+class ProductView(APIView):    
     # permission_classes = [IsAuthenticated]
 
-    # def get(self, request):
-    #     Category = self.request.query_params.get('Category')
-    #     if Category :
-    #         queryset = Product.objects.filter(Category__Category_name = Category)
-    #     else :
-    #         queryset = Product.objects.all()
-    #     serializer = ProductSerializer(queryset, many=True)
-    #     return Response(serializer.data)
-    
-    permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def get(self, request,format=None):
 
         # http://127.0.0.1:8000/api/products?Category=vegetable
         Category = self.request.query_params.get('Category')
@@ -29,12 +20,18 @@ class ProductView(APIView):
             queryset = Product.objects.filter(Category__Category_name=Category)
         else:
             queryset = Product.objects.all()
-        serializer = ProductSerializer(queryset, many=True)
+            
+        
+        
+        # image
+        serializer = ProductSerializer(queryset, context={"request": request}, many=True)
+
         
         # http://127.0.0.1:8000/api/products?Category=vegetable
+        
         return Response({'count': len(serializer.data), 'data' :serializer.data})
     
-    
+
 
     def post(self, request):
         serializer = ProductSerializer(data=request.data)
