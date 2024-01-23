@@ -2,15 +2,106 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
 from .serializers import *
 from rest_framework import generics
 from django.contrib.auth import authenticate
 from .models import *
+from rest_framework.generics import RetrieveAPIView
+
+from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions
+
+from rest_framework.generics import ListCreateAPIView
+from rest_framework.viewsets import ModelViewSet
+
+from django.contrib.auth.models import Group
+from .serializers import GroupSerializer
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.contrib.auth.models import Group, User
+
+from django.contrib.auth.models import User
+from guardian.shortcuts import assign_perm
+
+from django.contrib.auth.models import User
+from guardian.shortcuts import assign_perm, get_objects_for_user
+
+
+from guardian.shortcuts import assign_perm, get_objects_for_user
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+
+@api_view(['POST'])
+def add_user_to_group(request):
+    try:
+        username = request.data['username']
+        group_name = request.data['group_name']
+
+        user = User.objects.get(username=username)
+        group = Group.objects.get(name=group_name)
+
+        user.groups.add(group)
+
+        return Response({'message': 'User added to group successfully'})
+    except User.DoesNotExist:
+        return Response({'message': 'User does not exist'}, status=400)
+    except Group.DoesNotExist:
+        return Response({'message': 'Group does not exist'}, status=400)
+
+
+class GroupListCreateAPIView(ListCreateAPIView):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+
+class GroupAPIView(APIView):
+    def get(self, request, pk=None):
+        if pk is not None:
+            group = Group.objects.get(pk=pk)
+            serializer = GroupSerializer(group)
+            return Response(serializer.data)
+        else:
+            groups = Group.objects.all()
+            serializer = GroupSerializer(groups, many=True)
+            return Response(serializer.data)
+
+    def post(self, request):
+        serializer = GroupSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+    def put(self, request, pk):
+        group = Group.objects.get(pk=pk)
+        serializer = GroupSerializer(group, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    def delete(self, request, pk):
+        group = Group.objects.get(pk=pk)
+        group.delete()
+        return Response(status=204)
+
+class UserDetailView(RetrieveAPIView):
+    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DjangoModelPermissions]
+
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
+    
+    
+    
 
 class RegisterView(APIView):
+
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')

@@ -12,6 +12,14 @@ urlpatterns = [
     path('users/', UserListView.as_view(), name='user-list'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    path('UserDetailView/', UserDetailView.as_view(), name='UserDetailView'),
+    
+    path('groups/', GroupListCreateAPIView.as_view(), name='group-list-create'),
+    path('groupss/', GroupAPIView.as_view(), name='group-list'),
+    path('groupss/<int:pk>/', GroupAPIView.as_view(), name='group-retrieve-update-delete'),
+          
+    path('add-user-to-group/', add_user_to_group, name='add_user_to_group'),
+
 
 
 

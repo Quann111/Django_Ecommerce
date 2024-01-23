@@ -34,10 +34,3 @@ class ProductSerializer(serializers.ModelSerializer):
         serializer = CategorySerializer(category)
         return serializer.data
     
-    
-# image
-    def get_photo_url(self, obj):
-        request = self.context.get('request')
-        photo_url = obj.fingerprint.url
-        return request.build_absolute_uri(photo_url)
-    

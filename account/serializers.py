@@ -1,6 +1,15 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import *
+from django.contrib.auth.models import Group
+from rest_framework.serializers import ModelSerializer
+
+
+
+class GroupSerializer(ModelSerializer):
+    class Meta:
+        model = Group
+        fields = '__all__'
 
 # class MemberSerializer(serializers.ModelSerializer):
 #     class Meta:
@@ -41,11 +50,11 @@ from .models import *
 
 
 class UserSerializer(serializers.ModelSerializer):
-    address = serializers.CharField(max_length=255)
-    phone = serializers.CharField(max_length=15)
+    address = serializers.CharField(max_length=255,required=False)
+    phone = serializers.CharField(max_length=15,required=False)
 
     def create(self, validated_data):
-        address = validated_data.pop("address")
+        address = validated_data("address")
         phone = validated_data.pop("phone")
         password = validated_data.pop("password")
 

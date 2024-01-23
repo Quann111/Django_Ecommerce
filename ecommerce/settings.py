@@ -49,8 +49,15 @@ INSTALLED_APPS = [
     'account',
     'Carts',
     'corsheaders',
+    'guardian',
+
     
 ]
+
+# AUTHENTICATION_BACKENDS = [
+#     'django.contrib.auth.backends.ModelBackend',
+#     'django.contrib.auth.backends.ObjectPermissionBackend',
+# ]
 
 
 REST_FRAMEWORK = {
