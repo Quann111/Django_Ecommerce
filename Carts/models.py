@@ -48,22 +48,18 @@ class CartItem(models.Model):
 @receiver(pre_save, sender=CartItem)
 def correct_price(sender, instance, **kwargs):
     cart_item = instance
-    
+
     # Tính toán giá tiền cho mỗi CartItem
     price_of_product = Product.objects.get(id=cart_item.product.id)
     cart_item.price = cart_item.quantity * float(price_of_product.Price)
-    
+
     # Truy vấn tất cả các CartItem của người dùng
     cart_items = CartItem.objects.filter(user=cart_item.user)
-    
-    # Tính tổng giá trị hàng
-    total_price = 0
-    for item in cart_items:
-        total_price += item.price
-    
+
+    total_price = sum(item.price for item in cart_items)
     # Lấy hoặc tạo một Cart cho người dùng
     cart, _ = Cart.objects.get_or_create(user=cart_item.user, ordered=False)
-    
+
     # Cập nhật total_price của Cart
     cart.total_price = total_price
     cart.save()

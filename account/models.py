@@ -1,9 +1,13 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User ,Group
 import uuid
 # from django.contrib.auth.models import AbstractUser, Group
 
+class Groupp(models.Model):
+    GROUP = models.ForeignKey(Group, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.GROUP.name    
 
 class Member(models.Model):
     # user = models.OneToOneField(User, on_delete=models.CASCADE)

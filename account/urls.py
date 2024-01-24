@@ -18,7 +18,9 @@ urlpatterns = [
     path('groupss/', GroupAPIView.as_view(), name='group-list'),
     path('groupss/<int:pk>/', GroupAPIView.as_view(), name='group-retrieve-update-delete'),
           
-    path('add-user-to-group/', add_user_to_group, name='add_user_to_group'),
+    path('add_user_to_group/', add_user_to_group, name='add_user_to_group'),
+    path('user_permissions/', UserPermissionView.as_view(), name='user_permissions'),
+
 
 
 

@@ -11,10 +11,10 @@ class GroupSerializer(ModelSerializer):
         model = Group
         fields = '__all__'
 
-# class MemberSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Member
-#         fields = '__all__' 
+class MemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Member
+        fields = '__all__'
 
 # # 
 # class UserSerializer(serializers.ModelSerializer): 
